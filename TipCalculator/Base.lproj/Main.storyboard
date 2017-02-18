@@ -63,7 +63,7 @@
                                 <color key="maximumTrackTintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="thumbTintColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
-                                    <action selector="calculateTipBySlider:" destination="BYZ-38-t0r" eventType="valueChanged" id="VzO-aH-VJY"/>
+                                    <action selector="adjustTipPercentage:" destination="BYZ-38-t0r" eventType="valueChanged" id="Kda-Rb-F6r"/>
                                 </connections>
                             </slider>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" fixedFrame="YES" text="Tip Amt:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Ot-qq-NvQ">

@@ -69,8 +69,10 @@
     }
 }
 
-- (IBAction)calculateTipBySlider:(UISlider *)sender {
-
+- (IBAction)adjustTipPercentage:(UISlider *)sender {
+    self.tipPercentageTextField.text = [NSString stringWithFormat:@"%f", [sender value]];
 }
+
+
 
 @end
