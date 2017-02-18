@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TipperViewController : UIViewController
+@interface TipperViewController : UIViewController <UITextFieldDelegate>
 
 
 @end

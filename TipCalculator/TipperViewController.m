@@ -27,6 +27,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
+    self.billAmountTextField.delegate = self;
+    self.tipPercentageTextField.delegate = self;
+    
     NSDecimalNumber *initialBillAmount = [[NSDecimalNumber alloc] initWithFloat:0.00];
     NSDecimalNumber *initialTipPercentage = [[NSDecimalNumber alloc] initWithFloat:0.15];
 
@@ -38,8 +41,16 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (IBAction)calculateTip:(UIButton *)sender {
+- (IBAction)calculateTipButton:(UIButton *)sender {
+    [self calculateTip];
+}
 
+- (IBAction)adjustTipPercentage:(UISlider *)sender {
+    self.tipPercentageTextField.text = [NSString stringWithFormat:@"%.f", [sender value]];
+}
+
+- (void)calculateTip {
+    
     NSDecimalNumber *tipAmount = [[NSDecimalNumber alloc] initWithString:@"0"];
     NSDecimalNumber *billAmount = [[NSDecimalNumber alloc] initWithString:@"0"];
     NSDecimalNumber *tipPercentage = [[NSDecimalNumber alloc] initWithString:@"0.15"];
@@ -61,18 +72,52 @@
         
         NSNumberFormatter *formatDollars = [[NSNumberFormatter alloc] init];
         [formatDollars setNumberStyle:NSNumberFormatterCurrencyStyle];
+        
         self.tipAmountLabel.text = [formatDollars stringFromNumber:tipAmount];
     }
     
     else {
         self.tipAmountLabel.text = @"$0.00";
     }
+    
+    [self.view endEditing:YES];
 }
 
-- (IBAction)adjustTipPercentage:(UISlider *)sender {
-    self.tipPercentageTextField.text = [NSString stringWithFormat:@"%f", [sender value]];
+-(BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    
+    return YES;
 }
 
 
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+    
+    [self.view endEditing:YES];
+    
+    return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+    
+    [self.view endEditing:YES];
+    
+    [self calculateTip];
+    
+    return YES;
+}
+
+
+- (void)keyboardWillShow:(NSNotification *)notification
+{
+    [self.view setFrame:CGRectMake(0,-110,self.view.frame.size.width,self.view.frame.size.height)];
+    
+}
+
+-(void)keyboardWillHide:(NSNotification *)notification
+{
+    [self.view setFrame:CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height)];
+}
 
 @end
