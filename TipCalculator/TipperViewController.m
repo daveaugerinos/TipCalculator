@@ -47,19 +47,22 @@
 
 - (IBAction)adjustTipPercentage:(UISlider *)sender {
     self.tipPercentageTextField.text = [NSString stringWithFormat:@"%.f", [sender value]];
+    [self calculateTip];
 }
 
 - (void)calculateTip {
     
     NSDecimalNumber *tipAmount = [[NSDecimalNumber alloc] initWithString:@"0"];
     NSDecimalNumber *billAmount = [[NSDecimalNumber alloc] initWithString:@"0"];
-    NSDecimalNumber *tipPercentage = [[NSDecimalNumber alloc] initWithString:@"0.15"];
+    NSDecimalNumber *tipPercentage = [[NSDecimalNumber alloc] initWithString:@"15"];
     NSDecimalNumber *hundred = [[NSDecimalNumber alloc] initWithString:@"100"];
     
     NSCharacterSet* invalid = [[NSCharacterSet decimalDigitCharacterSet] invertedSet];
     
-    if(![self.billAmountTextField.text isEqualToString:@""]) {
-        if([self.billAmountTextField.text rangeOfCharacterFromSet:invalid].location == NSNotFound || [self.tipPercentageTextField.text rangeOfCharacterFromSet:invalid].location == NSNotFound) {
+    if([self.billAmountTextField.text rangeOfCharacterFromSet:invalid].location == NSNotFound && [self.tipPercentageTextField.text rangeOfCharacterFromSet:invalid].location == NSNotFound) {
+        
+        if(![self.billAmountTextField.text isEqualToString:@""] && ![self.tipPercentageTextField.text isEqualToString:@""]) {
+            
             billAmount = [[NSDecimalNumber alloc] initWithString:self.billAmountTextField.text];
             tipPercentage = [[NSDecimalNumber alloc] initWithString:self.tipPercentageTextField.text];
             tipPercentage = [tipPercentage decimalNumberByDividingBy:hundred];
@@ -79,8 +82,6 @@
     else {
         self.tipAmountLabel.text = @"$0.00";
     }
-    
-    [self.view endEditing:YES];
 }
 
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
@@ -89,13 +90,16 @@
     return YES;
 }
 
-
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(calculateTip) name:UITextFieldTextDidChangeNotification object:nil];
+    
+    return YES;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     
     [self.view endEditing:YES];
-    
-    return YES;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -105,7 +109,7 @@
     
     [self calculateTip];
     
-    return YES;
+    return NO;
 }
 
 
@@ -115,9 +119,14 @@
     
 }
 
--(void)keyboardWillHide:(NSNotification *)notification
+- (void)keyboardWillHide:(NSNotification *)notification
 {
     [self.view setFrame:CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height)];
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    [self.billAmountTextField resignFirstResponder];
+    [self.tipPercentageTextField resignFirstResponder];
 }
 
 @end
