@@ -13,8 +13,8 @@
 - (instancetype)initWithBillAmount:(NSDecimalNumber *)billAmount TipPercentage:(NSDecimalNumber *)tipPercentage {
     self = [super init];
     if (self) {
-        self.billAmount = [[NSDecimalNumber alloc] initWithString:@"0"];
-        self.tipPercentage = [[NSDecimalNumber alloc] initWithString:@"0.15"];
+        self.billAmount = billAmount;
+        self.tipPercentage = tipPercentage;
     }
     return self;
 }
